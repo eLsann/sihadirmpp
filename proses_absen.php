@@ -1,6 +1,9 @@
 <?php
 include 'config.php';
 
+// Set zona waktu agar sinkron dengan WIB
+date_default_timezone_set('Asia/Jakarta');
+
 /* =========================
    AMBIL DATA FORM
 ========================= */
@@ -8,18 +11,32 @@ $nama          = mysqli_real_escape_string($conn, $_POST['nama']);
 $kategori      = $_POST['kategori'];
 $status_hadir  = $_POST['status_hadir'];
 $keterangan    = isset($_POST['keterangan']) 
-                ? mysqli_real_escape_string($conn, $_POST['keterangan']) 
-                : null;
+                 ? mysqli_real_escape_string($conn, $_POST['keterangan']) 
+                 : null;
 $koordinat     = $_POST['koordinat'];
 $akurasi       = $_POST['akurasi'];
-$jam           = date('H:i');
+$jam_sekarang  = date('H:i'); // Mengambil jam saat ini (Format 24 jam)
 
 /* =========================
-   ANALISIS AI
+   LOGIKA ANALISIS AI
 ========================= */
 $ai_notes = [];
-$ai_notes[] = ($jam > "08:00") ? "Terlambat" : "Tepat Waktu";
-$ai_notes[] = ($akurasi > 50) ? "Lokasi Kurang Akurat" : "Lokasi Valid";
+
+// 1. Validasi Waktu: Terlambat jika > 07:30
+if ($jam_sekarang > "07:30") {
+    $ai_notes[] = "Terlambat";
+} else {
+    $ai_notes[] = "Tepat Waktu";
+}
+
+// 2. Validasi Jarak/Akurasi Lokasi
+if ($akurasi > 100) {
+    $ai_notes[] = "Lokasi Kurang Akurat";
+} else {
+    $ai_notes[] = "Lokasi Valid";
+}
+
+// Menggabungkan hasil analisis menjadi satu string untuk database
 $status_ai = implode(" | ", $ai_notes);
 
 /* =========================
@@ -29,19 +46,18 @@ $nama_file = "";
 
 /* === HADIR → FOTO SELFIE === */
 if ($status_hadir == "Hadir" && !empty($_POST['foto_base64'])) {
-
     $foto_data = $_POST['foto_base64'];
     $foto_data = str_replace('data:image/jpeg;base64,', '', $foto_data);
     $foto_data = str_replace(' ', '+', $foto_data);
     $data = base64_decode($foto_data);
 
+    // Menyimpan foto di folder uploads/
     $nama_file = "Selfie_" . time() . ".jpg";
     file_put_contents("uploads/" . $nama_file, $data);
 }
 
 /* === IZIN / SAKIT → FILE SURAT === */
 if (($status_hadir == "Izin" || $status_hadir == "Sakit") && isset($_FILES['file_surat']) && $_FILES['file_surat']['error'] == 0) {
-
     $ext = pathinfo($_FILES['file_surat']['name'], PATHINFO_EXTENSION);
     $nama_file = "Surat_" . time() . "." . $ext;
     move_uploaded_file($_FILES['file_surat']['tmp_name'], "uploads/" . $nama_file);
@@ -50,16 +66,18 @@ if (($status_hadir == "Izin" || $status_hadir == "Sakit") && isset($_FILES['file
 /* =========================
    SIMPAN KE DATABASE
 ========================= */
+// Memasukkan hasil analisis AI ke kolom analisis_ai
 $query = "INSERT INTO absensi 
-(nama, kategori, status_hadir, keterangan, foto, koordinat, akurasi_meter, analisis_ai)
+(nama, kategori, status_hadir, keterangan, foto, koordinat, akurasi_meter, analisis_ai, waktu_absen)
 VALUES
-('$nama', '$kategori', '$status_hadir', '$keterangan', '$nama_file', '$koordinat', '$akurasi', '$status_ai')";
+('$nama', '$kategori', '$status_hadir', '$keterangan', '$nama_file', '$koordinat', '$akurasi', '$status_ai', NOW())";
 
 mysqli_query($conn, $query);
 
 /* =========================
    REDIRECT
 ========================= */
+// Kembali ke dashboard setelah sukses
 header("Location: dashboard.php");
 exit;
 ?>

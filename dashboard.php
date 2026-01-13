@@ -39,7 +39,7 @@ if(!isset($_SESSION['user']) || $_SESSION['role'] != 'peserta') header("Location
 
         /* Main Card Container */
         .main-container {
-            max-width: 950px;
+            max-width: 1100px;
             margin: 0 auto 50px auto;
             padding: 0 15px;
         }
