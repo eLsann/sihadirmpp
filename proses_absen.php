@@ -79,5 +79,40 @@ mysqli_query($conn, $query);
 ========================= */
 // Kembali ke dashboard setelah sukses
 header("Location: dashboard.php");
+
+/* =========================
+   PROSES FOTO DENGAN WATERMARK
+========================= */
+$nama_file = "";
+
+if ($status_hadir == "Hadir" && !empty($_POST['foto_base64'])) {
+    // 1. Decode foto dari Base64
+    $foto_data = $_POST['foto_base64'];
+    $foto_data = str_replace('data:image/jpeg;base64,', '', $foto_data);
+    $foto_data = str_replace(' ', '+', $foto_data);
+    $data = base64_decode($foto_data);
+
+    // 2. Buat resource gambar dari data decode
+    $image = imagecreatefromstring($data);
+    
+    // 3. Tentukan warna teks (Putih) dan warna bayangan (Hitam) agar terbaca
+    $white = imagecolorallocate($image, 255, 255, 255);
+    $black = imagecolorallocate($image, 0, 0, 0);
+
+    // 4. Siapkan teks watermark (Tanggal & Jam Real-time)
+    $text = "SIHADIR MPP - " . date('d/m/Y H:i:s') . " WIB";
+    
+    // 5. Tambahkan teks ke gambar (posisi pojok kiri bawah)
+    // imagestring(image, font_size, x, y, string, color)
+    imagestring($image, 5, 12, 12, $text, $black); // Shadow
+    imagestring($image, 5, 10, 10, $text, $white); // Main Text
+
+    // 6. Simpan gambar hasil watermark ke folder uploads
+    $nama_file = "Selfie_" . time() . ".jpg";
+    imagejpeg($image, "uploads/" . $nama_file, 90); // Kualitas 90%
+
+    // 7. Bersihkan memori
+    imagedestroy($image);
+}
 exit;
 ?>

@@ -164,3 +164,32 @@
 .form-control {
     flex: 1; /* Input akan mengisi ruang yang tersisa */
 }
+/* Efek mirror hanya untuk preview di layar agar tidak bingung */
+#video {
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    border: 3px solid #070136;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+}
+/* Menghilangkan garis bawah dan mengubah warna menjadi putih */
+.logout-link {
+    color: white !important;
+    text-decoration: none !important; /* Menghilangkan garis bawah */
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+/* Efek saat kursor diarahkan ke tombol logout */
+.logout-link:hover {
+    color: #f1f2f5 !important;
+    opacity: 0.8;
+}
+
+.logout-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+}

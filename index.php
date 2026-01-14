@@ -1,4 +1,8 @@
-<?php include 'config.php'; ?>
+<?php 
+include 'config.php'; 
+// Memulai session untuk menyimpan data login
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,27 +10,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SIHADIR MPP BKPSDM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #e4e8f5ff; /* baground*/
+            background-color: #e4e8f5ff; /* Background Abu-abu Kebiruan */
             height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
         }
 
         .login-card {
-            background-color: #1b05e4ff; /* Biru card sedikit lebih terang */
+            background-color: #1b05e4ff; /* Navy Blue Utama */
             padding: 40px 30px;
             border-radius: 30px;
             width: 100%;
             max-width: 400px;
             text-align: center;
             color: white;
-            box-shadow: 0 0 50px rgba(3, 6, 65, 0.9); /* Efek bayangan dalam */
+            box-shadow: 0 10px 50px rgba(3, 6, 65, 0.4); 
             border: 1px solid rgba(50, 30, 232, 0.88);
         }
 
@@ -36,8 +41,9 @@
         }
 
         .login-card h2 {
+            font-family: 'Poppins', sans-serif;
             font-weight: 800;
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 5px;
             letter-spacing: 1px;
         }
@@ -54,11 +60,12 @@
             padding: 12px 15px;
             margin-bottom: 15px;
             border: none;
+            font-size: 0.9rem;
         }
 
         .btn-login {
             background-color: white;
-            color: blue;
+            color: #1b05e4ff;
             font-weight: 700;
             width: 100%;
             padding: 12px;
@@ -66,19 +73,19 @@
             border: none;
             transition: 0.3s;
             margin-top: 10px;
+            text-transform: uppercase;
         }
 
         .btn-login:hover {
             background-color: #f0f0f0;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        /* Footer teks di bawah */
-        .footer-text {
+        footer h6 {
+            color: #1b05e4ff;
+            font-weight: 700;
             margin-top: 20px;
-            color: #010854fb;
-            font-size: 1rem;
-            font-weight: 500;
         }
     </style>
 </head>
@@ -93,7 +100,7 @@
     <?php
     if(isset($_POST['login'])){
         $u = mysqli_real_escape_string($conn, $_POST['username']);
-        $p = $_POST['password'];
+        $p = $_POST['password']; // Sebaiknya gunakan password_hash nantinya
         $role = $_POST['role'];
         
         $res = mysqli_query($conn, "SELECT * FROM users WHERE username='$u' AND password='$p' AND role='$role'");
@@ -102,10 +109,16 @@
             $row = mysqli_fetch_assoc($res);
             $_SESSION['user'] = $row['username'];
             $_SESSION['role'] = $row['role'];
-            header("Location: " . ($row['role'] == 'admin' ? 'admin.php' : 'dashboard.php'));
+            
+            // Logika Pengalihan Halaman
+            if($row['role'] == 'admin') {
+                header("Location: admin.php");
+            } else {
+                header("Location: dashboard.php");
+            }
             exit();
         } else {
-            echo "<div class='alert alert-danger py-2 small mb-3'>Login gagal, cek kembali data Anda.</div>";
+            echo "<div class='alert alert-danger py-2 small mb-3' style='border-radius:10px;'>Login gagal, cek kembali data Anda.</div>";
         }
     }
     ?>
@@ -120,18 +133,16 @@
         <input type="text" name="username" class="form-control" placeholder="Username" required>
         <input type="password" name="password" class="form-control" placeholder="Password" required>
         
-        <button type="submit" name="login" class="btn btn-login">Login</button>
+        <button type="submit" name="login" class="btn btn-login">Masuk Sekarang</button>
     </form>
 </div>
 
- <footer class="text-center py-4">
-            <h6 style="font-family: 'Poppins', sans-serif; color: #2106e6ff; font-weight: 700; letter-spacing: 0.5px;">
-                Dibuat oleh Aulia Annisa (auliaannnnn_)
-            </h6>
-            <p style="color: #090142ff; font-size: 11px; opacity: 0.7; font-family: 'Inter', sans-serif;">
-                SIHADIR MPP BKPSDM 
-            </p>
-        </footer>
+<footer class="text-center py-4">
+    <h6>Dibuat oleh Aulia Annisa (auliaannnnn_)</h6>
+    <p style="color: #090142ff; font-size: 11px; opacity: 0.7;">
+        SIHADIR MPP BKPSDM &copy; 2026
+    </p>
+</footer>
 
 </body>
 </html>
