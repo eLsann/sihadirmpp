@@ -1,4 +1,4 @@
-# 📋 SIHADIR MPP
+# SIHADIR MPP
 
 <div align="center">
 
@@ -17,7 +17,7 @@
 
 ---
 
-## ✨ Fitur
+## Fitur
 
 | Fitur | Deskripsi |
 |-------|-----------|
@@ -32,7 +32,7 @@
 
 ---
 
-## 🛠️ Teknologi
+## Teknologi
 
 <table>
 <tr>
@@ -53,7 +53,7 @@
 
 ---
 
-## 🚀 Instalasi
+## Instalasi
 
 ### Prasyarat
 - [XAMPP](https://www.apachefriends.org/) / [Laragon](https://laragon.org/) / Web server dengan PHP & MySQL
@@ -115,7 +115,7 @@ http://localhost/sihadirmpp/
 
 ---
 
-## 📖 Penggunaan
+## Penggunaan
 
 ### Login
 
