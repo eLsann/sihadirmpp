@@ -219,8 +219,6 @@ Project ini dibuat untuk keperluan pendidikan dan dapat digunakan secara bebas.
 
 <div align="center">
 
-**SIHADIR MPP** © 2026 - Sistem Hadir Digital untuk BKPSDM
-
-Made with ❤️ by Aulia Annisa
+**SIHADIR MPP** © 2026 - Sistem Hadir Digital
 
 </div>
