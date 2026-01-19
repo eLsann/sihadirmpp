@@ -34,6 +34,6 @@ $sql = "INSERT INTO absensi (nama, kategori, foto, koordinat, akurasi_meter, ana
         VALUES ('$nama', '$kategori', '$nama_foto', '$koordinat', '$akurasi', '$hasil_ai')";
 
 if (mysqli_query($conn, $sql)) {
-    header("Location: riwayat.php");
+    header("Location: dashboard.php");
 }
 ?>
